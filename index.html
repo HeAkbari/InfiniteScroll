@@ -53,7 +53,7 @@
     };
     const element = document.querySelector("#scrollerArea");
 
-    function resizeObserver(entries){
+    function resizeObserverHandler(entries){
       const height = entries.map((t) => t.contentRect.height)[0];
       if (height <= 500) {
         itemCount = 10;
@@ -65,7 +65,7 @@
         itemCount = 25;
       }
     }
-    const resizeObserver = new ResizeObserver(resizeObserver);
+    const resizeObserver = new ResizeObserver(resizeObserverHandler);
     resizeObserver.observe(element);
 
     function handleIntersection(entries) {
