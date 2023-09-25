@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-bs-theme="light" id="html">
+  <head>
+    <meta charset="utf-8" />
+    <title>social App</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      .postItem {
+        background: #fff;
+        border: 1px solid #666;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+      }
+      #scrollerArea {
+        height: 100%;
+        overflow-y: scroll;
+      }
+
+      #loader {
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+      }
+      #loader span {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 2s linear infinite;
+      }
+    </style>
+  </head>
+  <body class="overflow-hidden">
+    <div id="scrollerArea">
+      <div id="loader">
+        <span class="loader"></span>
+      </div>
+    </div>
+  </body>
+  <script>
+    const scrollerArea = document.querySelector("#scrollerArea");
+    const loader = document.querySelector("#loader");
+    let counter = 1;
+    let itemCount = 10;
+
+    const options = {
+      threshold: 0.75,
+    };
+    const element = document.querySelector("#scrollerArea");
+
+    function resizeObserver(entries){
+      const height = entries.map((t) => t.contentRect.height)[0];
+      if (height <= 500) {
+        itemCount = 10;
+      } else if (height > 500 && height <= 700) {
+        itemCount = 15;
+      } else if (height > 700 && height <= 900) {
+        itemCount = 20;
+      } else {
+        itemCount = 25;
+      }
+    }
+    const resizeObserver = new ResizeObserver(resizeObserver);
+    resizeObserver.observe(element);
+
+    function handleIntersection(entries) {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        setTimeout(() => {
+          loadItems(itemCount);
+          //Moving loader element at the end of the post items
+          scrollerArea?.appendChild(loader);
+        }, 1000);
+      }
+    }
+    const observer = new IntersectionObserver(handleIntersection, options);
+    observer.observe(loader);
+
+    //loading data
+    function loadItems(n) {
+      for (let i = 0; i < n; i++) {
+        let newItem = document.createElement("div");
+        newItem.classList.add("postItem");
+        newItem.textContent = "PostItem " + counter++;
+        scrollerArea?.appendChild(newItem);
+      }
+    }
+  </script>
+</html>
